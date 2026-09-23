@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Կծուծիծակի Ինտերակտիվ Խաղ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at 20% 50%, #ff6b6b, #1a1a2e 60%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+
+        .game-container {
+            text-align: center;
+            z-index: 10;
+        }
+
+        .title {
+            font-size: 48px;
+            margin-bottom: 30px;
+            animation: titleGlow 2s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 0 0 40px rgba(255, 107, 107, 1),
+                            0 0 60px rgba(255, 230, 109, 0.6);
+                transform: scale(1.05);
+            }
+        }
+
+        .game-area {
+            width: 400px;
+            height: 500px;
+            border: 4px solid #ff6b6b;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(238, 90, 63, 0.2));
+            position: relative;
+            margin: 30px auto;
+            box-shadow: 0 0 40px rgba(255, 107, 107, 0.5),
+                       inset 0 0 40px rgba(255, 107, 107, 0.1);
+            overflow: hidden;
+        }
+
+        .clickable-pepper {
+            position: absolute;
+            font-size: 80px;
+            cursor: pointer;
+            user-select: none;
+            animation: appear 0.3s ease-out;
+            filter: drop-shadow(0 0 10px rgba(255, 107, 107, 0.8));
+            transition: all 0.1s ease;
+        }
+
+        .clickable-pepper:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 20px rgba(255, 107, 107, 1));
+        }
+
+        @keyframes appear {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            max-width: 600px;
+            margin: 30px auto;
+        }
+
+        .score-item {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a3f);
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+            min-width: 150px;
+        }
+
+        .score-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: 32px;
+            color: #ffe66d;
+            animation: scoreUpdate 0.5s ease-out;
+        }
+
+        @keyframes scoreUpdate {
+            0% {
+                transform: scale(1.2);
+                color: #ffff00;
+            }
+            100% {
+                transform: scale(1);
+                color: #ffe66d;
+            }
+        }
+
+        .controls {
+            margin: 30px 0;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a3f);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(255, 107, 107, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 107, 107, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #c92a2a, #990000);
+        }
+
+        .combo {
+            font-size: 32px;
+            color: #ffe66d;
+            font-weight: bold;
+            margin-top: 20px;
+            text-shadow: 0 0 20px rgba(255, 230, 109, 0.8);
+            animation: comboFloat 0.6s ease-out;
+        }
+
+        @keyframes comboFloat {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .timer {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffe66d;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(255, 230, 109, 0.8);
+        }
+
+        .timer.warning {
+            color: #ff6b6b;
+            animation: pulse 0.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .power-ups {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .power-up {
+            font-size: 40px;
+            cursor: pointer;
+            filter: drop-shadow(0 0 10px rgba(255, 230, 109, 0.6));
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .power-up:hover {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+
+        .power-up.active {
+            animation: powerUpPulse 0.3s ease-out;
+        }
+
+        @keyframes powerUpPulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+            animation: messageFade 1s ease-out;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes messageFade {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+        }
+
+        .achievements {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid #ff6b6b;
+            border-radius: 15px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .achievement {
+            display: inline-block;
+            margin: 10px;
+            font-size: 24px;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .achievement.unlocked {
+            opacity: 1;
+            animation: unlockAnimation 0.5s ease-out;
+        }
+
+        @keyframes unlockAnimation {
+            0% {
+                transform: scale(0) rotate(-180deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">🌶️ ԿԾՈՒԾԻԾԱԿԻ ՄԱՐՏ 🌶️</div>
+
+    <div class="timer" id="timer">60</div>
+
+    <div class="game-area" id="gameArea"></div>
+
+    <div class="score-board">
+        <div class="score-item">
+            <div class="score-label">ՄԻԱՎՈՐՆԵՐ</div>
+            <div class="score-value" id="score">0</div>
+        </div>
+        <div class="score-item">
+            <div class="score-label">ԿՈՄԲՈ</div>
+            <div class="score-value" id="combo">0</div>
+        </div>
+        <div class="score-item">
+            <div class="score-label">ԸՆԴԱՄԵՆ</div>
+            <div class="score-value" id="total">0</div>
+        </div>
+    </div>
+
+    <div class="power-ups" id="powerUps">
+        <div class="power-up" title="Կրկնակի միավոր">2️⃣</div>
+        <div class="power-up" title="Դանդաղ ժամանակ">⏱️</div>
+        <div class="power-up" title="Կրակային ուժ">🔥</div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="startGame()">🎮 ԽԱՂ ՍԿՍԵԼ</button>
+        <button class="btn btn-danger" onclick="resetGame()">🔄 ՎԵՐԱՍԿՍԵԼ</button>
+    </div>
+
+    <div class="achievements">
+        <div class="achievement" id="ach1" title="100 միավոր">🏅</div>
+        <div class="achievement" id="ach2" title="50 կոմբո">⭐</div>
+        <div class="achievement" id="ach3" title="Կրակային ուժ">🔥</div>
+        <div class="achievement" id="ach4" title="Գերմաս">💎</div>
+    </div>
+
+    <script>
+        let score = 0;
+        let combo = 0;
+        let totalClicks = 0;
+        let timeLeft = 60;
+        let gameActive = false;
+        let doublePoints = false;
+        let slowTime = false;
+        let lastComboTime = 0;
+
+        const gameArea = document.getElementById('gameArea');
+        const scoreDisplay = document.getElementById('score');
+        const comboDisplay = document.getElementById('combo');
+        const totalDisplay = document.getElementById('total');
+        const timerDisplay = document.getElementById('timer');
+
+        function createPepper() {
+            if (!gameActive) return;
+
+            const pepper = document.createElement('div');
+            pepper.className = 'clickable-pepper';
+            pepper.textContent = '🌶️';
+            pepper.style.left = Math.random() * 320 + 'px';
+            pepper.style.top = Math.random() * 420 + 'px';
+
+            pepper.onclick = (e) => {
+                e.stopPropagation();
+                clickPepper(pepper);
+            };
+
+            gameArea.appendChild(pepper);
+
+            setTimeout(() => {
+                if (pepper.parentNode) pepper.remove();
+                if (gameActive) createPepper();
+            }, slowTime ? 2000 : 1000);
+        }
+
+        function clickPepper(pepper) {
+            let points = 10;
+            if (doublePoints) points *= 2;
+
+            score += points;
+            combo++;
+            totalClicks++;
+            lastComboTime = Date.now();
+
+            scoreDisplay.textContent = score;
+            comboDisplay.textContent = combo;
+            totalDisplay.textContent = totalClicks;
+
+            pepper.remove();
+
+            // Show combo message
+            if (combo % 5 === 0) {
+                showMessage(`${combo}x ԿՈՄԲՈ! 🔥`);
+            }
+
+            checkAchievements();
+        }
+
+        function showMessage(text) {
+            const msg = document.createElement('div');
+            msg.className = 'message';
+            msg.textContent = text;
+            document.body.appendChild(msg);
+
+            setTimeout(() => msg.remove(), 1000);
+        }
+
+        function checkAchievements() {
+            if (score >= 100) unlockAchievement(0);
+            if (combo >= 50) unlockAchievement(1);
+            if (doublePoints) unlockAchievement(2);
+            if (totalClicks >= 200) unlockAchievement(3);
+        }
+
+        function unlockAchievement(index) {
+            const ach = document.getElementById(`ach${index + 1}`);
+            if (!ach.classList.contains('unlocked')) {
+                ach.classList.add('unlocked');
+                showMessage('🏆 ՆՎԵՐ ԲԱՑՎԵՑ! 🏆');
+            }
+        }
+
+        function startGame() {
+            score = 0;
+            combo = 0;
+            totalClicks = 0;
+            timeLeft = 60;
+            gameActive = true;
+            doublePoints = false;
+
+            scoreDisplay.textContent = '0';
+            comboDisplay.textContent = '0';
+            totalDisplay.textContent = '0';
+            gameArea.innerHTML = '';
+
+            // Create initial peppers
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createPepper(), i * 200);
+            }
+
+            // Timer countdown
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+
+                if (timeLeft <= 10) {
+                    timerDisplay.classList.add('warning');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endGame();
+                }
+            }, 1000);
+
+            // Reset combo if not clicking
+            setInterval(() => {
+                if (Date.now() - lastComboTime > 3000 && combo > 0) {
+                    combo = 0;
+                    comboDisplay.textContent = '0';
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            gameActive = false;
+            gameArea.innerHTML = '';
+            timerDisplay.classList.remove('warning');
+            showMessage(`🎮 ԽԱՂ ԱՎԱՐՏ! 🎮\nԱ՛` + score + ' միավոր!');
+        }
+
+        function resetGame() {
+            gameActive = false;
+            gameArea.innerHTML = '';
+            score = 0;
+            combo = 0;
+            totalClicks = 0;
+            timeLeft = 60;
+            doublePoints = false;
+
+            scoreDisplay.textContent = '0';
+            comboDisplay.textContent = '0';
+            totalDisplay.textContent = '0';
+            timerDisplay.textContent = '60';
+            timerDisplay.classList.remove('warning');
+
+            document.querySelectorAll('.achievement').forEach(a => {
+                a.classList.remove('unlocked');
+            });
+        }
+
+        // Power-ups interaction
+        document.querySelectorAll('.power-up').forEach((powerUp, index) => {
+            powerUp.addEventListener('click', () => {
+                powerUp.classList.add('active');
+                
+                if (index === 0) { // Double points
+                    doublePoints = true;
+                    setTimeout(() => { doublePoints = false; }, 10000);
+                }
+                if (index === 1) { // Slow time
+                    slowTime = true;
+                    setTimeout(() => { slowTime = false; }, 5000);
+                }
+                if (index === 2) { // Combo boost
+                    combo += 10;
+                    comboDisplay.textContent = combo;
+                }
+
+                setTimeout(() => powerUp.classList.remove('active'), 300);
+            });
+        });
+    </script>
+</body>
+</html>
