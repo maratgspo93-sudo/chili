@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Կարմիր Կծուծիծակ - Գովազդ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a3f 50%, #c92a2a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chili-emoji {
+            font-size: 150px;
+            animation: bounce 2s ease-in-out infinite, rotate 3s linear infinite;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+            margin-bottom: 20px;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-30px);
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .title {
+            font-size: 48px;
+            color: white;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .subtitle {
+            font-size: 28px;
+            color: #ffe66d;
+            margin: 15px 0;
+            animation: fadeIn 1.5s ease-out;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            max-width: 600px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            animation: scaleIn 0.8s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .feature-item {
+            margin: 15px 0;
+            font-size: 20px;
+            color: #c92a2a;
+            animation: slideUp 0.8s ease-out backwards;
+        }
+
+        .feature-item:nth-child(1) { animation-delay: 0.3s; }
+        .feature-item:nth-child(2) { animation-delay: 0.6s; }
+        .feature-item:nth-child(3) { animation-delay: 0.9s; }
+        .feature-item:nth-child(4) { animation-delay: 1.2s; }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a3f 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.8s ease-out 1.5s backwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-button:active {
+            transform: translateY(-1px);
+        }
+
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .particle.fire {
+            font-size: 30px;
+            animation: floatUp 3s ease-in infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        .star {
+            position: absolute;
+            color: #ffe66d;
+            font-size: 20px;
+            animation: twinkle 1.5s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .pulse {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 107, 107, 0.5);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-out infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                width: 20px;
+                height: 20px;
+                opacity: 1;
+            }
+            100% {
+                width: 100px;
+                height: 100px;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="chili-emoji">🌶️</div>
+        
+        <h1 class="title">ԿԱՐՄԻՐ ԿԾՈՒԾԻԾԱԿ</h1>
+        
+        <div class="subtitle">🔥 Մեկ կծուց - հազար համեղ ճաշ 🔥</div>
+        
+        <div class="features">
+            <div class="feature-item">✨ Բնական վիտամինների ծավալ</div>
+            <div class="feature-item">💪 Հայկական ավանդական համեմուծ</div>
+            <div class="feature-item">🌟 Մետաբոլիզմ և անձեռնմխելի իմունիտետ</div>
+            <div class="feature-item">❤️ Ամբողջ ընտանիքի համար</div>
+        </div>
+        
+        <button class="cta-button">Պատվիրել Հիմա! 🛒</button>
+    </div>
+
+    <script>
+        // Create particle effects
+        const particlesContainer = document.getElementById('particles');
+
+        // Create floating peppers
+        for (let i = 0; i < 8; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle fire';
+            particle.textContent = '🌶️';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.bottom = '-50px';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            particlesContainer.appendChild(particle);
+
+            // Re-animate
+            particle.addEventListener('animationend', () => {
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.bottom = '-50px';
+                particle.style.animationDelay = '0s';
+            });
+        }
+
+        // Create stars
+        for (let i = 0; i < 15; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.textContent = '⭐';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 1.5 + 's';
+            particlesContainer.appendChild(star);
+        }
+
+        // Create pulse effects
+        for (let i = 0; i < 3; i++) {
+            const pulse = document.createElement('div');
+            pulse.className = 'pulse';
+            pulse.style.left = 50 + Math.random() * 30 - 15 + '%';
+            pulse.style.top = 50 + Math.random() * 30 - 15 + '%';
+            pulse.style.animationDelay = i * 0.5 + 's';
+            particlesContainer.appendChild(pulse);
+        }
+
+        // Button click interaction
+        document.querySelector('.cta-button').addEventListener('click', () => {
+            alert('Շնորհակալություն! Շուտով կոնտակտ կհաստատենք 🔥');
+        });
+    </script>
+</body>
+</html>
